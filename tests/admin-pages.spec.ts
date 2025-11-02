@@ -9,7 +9,7 @@ test('test access to admin page', async ({ getUserPage }) => {
   await adminPage.goto('http://localhost:3000/');
   
   // Check for navigation elements
-  await expect(adminPage.getByRole('link', { name: 'Next.js Application Template' })).toBeVisible();
+  await expect(adminPage.getByRole('link', { name: 'digits' })).toBeVisible();
   await expect(adminPage.getByRole('link', { name: 'Add Stuff' })).toBeVisible();
   await expect(adminPage.getByRole('link', { name: 'List Stuff' })).toBeVisible();
   await expect(adminPage.getByRole('link', { name: 'Admin' })).toBeVisible();

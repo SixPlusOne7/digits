@@ -1,6 +1,6 @@
 /* Set up some CSS variables to theme the application. */
 :root {
-  --nat-navbar-bg: rgb(0, 0, 139);
+  --nat-navbar-bg-color: rgb(0, 0, 139);
   --nat-navbar-bg-rgb: 0, 0, 139;
   --nat-navbar-text-color: #ffffff;
   --nat-navbar-highlight-text: khaki;
@@ -18,9 +18,12 @@ body {
 /* Change bootstrap variable values.
    See https://getbootstrap.com/docs/5.2/customize/css-variables/ */
 body {
-  --bs-dark: var(--nat-navbar-bg);
+  --bs-dark: var(--nat-navbar-bg-color);
   --bs-dark-rgb: var(--nat-navbar-bg-rgb);
-  background: fixed center url('/c.jpg');
+  background-image: url('/c.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-size: cover;
 }
 
@@ -38,7 +41,7 @@ footer a {
 }
 
 .bg-dark a.dropdown-item {
-  color: var(--nat-navbar-bg);
+  color: var(--nat-navbar-bg-color);
 }
 .wrapper {
   box-sizing: border-box;
