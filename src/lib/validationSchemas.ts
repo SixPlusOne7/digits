@@ -1,5 +1,13 @@
 import * as Yup from 'yup';
 
+export interface Contact {
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+}
+
 export const AddStuffSchema = Yup.object({
   name: Yup.string().required(),
   quantity: Yup.number().positive().required(),
