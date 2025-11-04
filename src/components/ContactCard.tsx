@@ -1,6 +1,7 @@
 'use client';
 
 /* eslint-disable react/prop-types */
+import Link from 'next/link';
 import { Card, Image } from 'react-bootstrap';
 import { Contact } from '@/lib/validationSchemas';
 
@@ -18,6 +19,11 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact }) => (
     <Card.Body>
       <Card.Text>{contact.description}</Card.Text>
     </Card.Body>
+    {contact.id ? (
+      <Card.Footer>
+        <Link href={`/edit/${contact.id}`}>Edit</Link>
+      </Card.Footer>
+    ) : null}
   </Card>
 );
 
