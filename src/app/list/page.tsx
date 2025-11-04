@@ -1,7 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { Col, Container, Row } from 'react-bootstrap';
-// import { prisma } from '@/lib/prisma';
-// import StuffItem from '@/components/StuffItem';
+import { prisma } from '@/lib/prisma';
 import { loggedInProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
 import { Contact } from '@/lib/validationSchemas';
@@ -17,49 +16,20 @@ const ListPage = async () => {
       // eslint-disable-next-line @typescript-eslint/comma-dangle
     } | null,
   );
-  // const owner = (session && session.user && session.user.email) || '';
-  // const stuff = await prisma.stuff.findMany({
-  //   where: {
-  //     owner,
-  //   },
-  // });
-  // console.log(stuff);
-  const contacts: Contact[] = [
-    {
-      firstName: 'Philip',
-      lastName: 'Johnson',
-      address: 'POST 307, University of Hawaii',
-      image: 'https://github.com/philipmjohnson.png',
-      description: [
-        'I am a Professor of Information and Computer Sciences at the University of Hawaii,',
-        'Director of the Collaborative Software Development Laboratory, and the CEO of OpenPowerQuality.com.',
-      ].join(' '),
-    },
-    {
-      firstName: 'Henri',
-      lastName: 'Casanova',
-      address: 'POST 307, University of Hawaii',
-      image: 'https://avatars0.githubusercontent.com/u/7494478?s=460&v=4',
-      description: [
-        'I am originally from France.',
-        'I maintain a list of reports from my surf sessions.',
-        'I have proof that I ran the Hana relay with an actual Team.',
-      ].join(' '),
-    },
-    {
-      firstName: 'Kim',
-      lastName: 'Binsted',
-      address: 'POST 307, University of Hawaii',
-      image: 'https://www.ics.hawaii.edu/wp-content/uploads/2013/08/kim_binsted-square-300x300.jpg',
-      description: [
-        'Kim Binsted received her BSc in Physics at McGill (1991),',
-        'and her PhD in Artificial Intelligence from the University of Edinburgh (1996).',
-        'Her thesis topic was the computational modeling and generation of punning riddles,',
-        'and her program, JAPE (Joke Analysis and Production Engine), generated puns such as',
-        '"What do you call a Martian who drinks beer? An ale-ien!".',
-      ].join(' '),
-    },
-  ];
+  const owner = session?.user?.email ?? '';
+  const prismaContacts = await (prisma as any).contact.findMany({
+    where: { owner },
+    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+  });
+  const contacts: Contact[] = prismaContacts.map((contact: any) => ({
+    id: contact.id,
+    firstName: contact.firstName,
+    lastName: contact.lastName,
+    address: contact.address,
+    image: contact.image,
+    description: contact.description,
+    owner: contact.owner,
+  }));
   return (
     <main>
       <Container id="list" fluid className="py-3">
@@ -68,7 +38,7 @@ const ListPage = async () => {
             <h2>List Contacts</h2>
             <Row xs={1} md={2} lg={3} className="g-4">
               {contacts.map((contact) => (
-                <Col key={`Contact-${contact.firstName}`}>
+                <Col key={`Contact-${contact.id ?? contact.firstName}`}>
                   <ContactCard contact={contact} />
                 </Col>
               ))}

@@ -1,11 +1,13 @@
 import * as Yup from 'yup';
 
 export interface Contact {
+  id?: number;
   firstName: string;
   lastName: string;
   address: string;
   image: string;
   description: string;
+  owner: string;
 }
 
 export const AddStuffSchema = Yup.object({

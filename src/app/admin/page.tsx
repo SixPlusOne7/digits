@@ -1,9 +1,10 @@
 import { getServerSession } from 'next-auth';
-import { Col, Container, Row, Table } from 'react-bootstrap';
-import StuffItemAdmin from '@/components/StuffItemAdmin';
+import { Col, Container, Row } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
 import { adminProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
+import ContactCardAdmin from '@/components/ContactCardAdmin';
+import { Contact } from '@/lib/validationSchemas';
 
 const AdminPage = async () => {
   const session = await getServerSession(authOptions);
@@ -12,52 +13,32 @@ const AdminPage = async () => {
       user: { email: string; id: string; randomKey: string };
     } | null,
   );
-  const stuff = await prisma.stuff.findMany({});
-  const users = await prisma.user.findMany({});
+  const prismaContacts = await prisma.contact.findMany({
+    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+  });
+  const contacts: Contact[] = prismaContacts.map((contact) => ({
+    id: contact.id,
+    firstName: contact.firstName,
+    lastName: contact.lastName,
+    address: contact.address,
+    image: contact.image,
+    description: contact.description,
+    owner: contact.owner,
+  }));
 
   return (
     <main>
       <Container id="list" fluid className="py-3">
         <Row>
           <Col>
-            <h1>List Stuff Admin</h1>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Quantity</th>
-                  <th>Condition</th>
-                  <th>Owner</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stuff.map((item) => (
-                  <StuffItemAdmin key={item.id} {...item} />
-                ))}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <h1>List Users Admin</h1>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <h2>List Contacts (Admin)</h2>
+            <Row xs={1} md={2} lg={3} className="g-4">
+              {contacts.map((contact) => (
+                <Col key={`Contact-${contact.id ?? `${contact.firstName}-${contact.lastName}-${contact.owner}`}`}>
+                  <ContactCardAdmin contact={contact} />
+                </Col>
+              ))}
+            </Row>
           </Col>
         </Row>
       </Container>
