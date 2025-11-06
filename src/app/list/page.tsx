@@ -6,6 +6,14 @@ import authOptions from '@/lib/authOptions';
 import { Contact } from '@/lib/validationSchemas';
 import ContactCard from '@/components/ContactCard';
 
+type Note = {
+  id: string;
+  contactId: string;
+  note: string;
+  owner: string;
+  createdAt: Date;
+};
+
 /** Render a list of stuff for the logged in user. */
 const ListPage = async () => {
   // Protect the page, only logged in users can access it.
@@ -21,6 +29,10 @@ const ListPage = async () => {
     where: { owner },
     orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
   });
+  const prismaNotes = await (prisma as any).note.findMany({
+    where: { owner },
+    orderBy: [{ createdAt: 'desc' }],
+  });
   const contacts: Contact[] = prismaContacts.map((contact: any) => ({
     id: contact.id,
     firstName: contact.firstName,
@@ -29,6 +41,13 @@ const ListPage = async () => {
     image: contact.image,
     description: contact.description,
     owner: contact.owner,
+  }));
+  const notes: Note[] = prismaNotes.map((note: any) => ({
+    id: note.id,
+    contactId: note.contactId,
+    note: note.note,
+    owner: note.owner,
+    createdAt: note.createdAt,
   }));
   return (
     <main>
@@ -39,7 +58,7 @@ const ListPage = async () => {
             <Row xs={1} md={2} lg={3} className="g-4">
               {contacts.map((contact) => (
                 <Col key={`Contact-${contact.id ?? contact.firstName}`}>
-                  <ContactCard contact={contact} />
+                  <ContactCard contact={contact} notes={notes.filter((note) => note.contactId === contact.id)} />
                 </Col>
               ))}
             </Row>
