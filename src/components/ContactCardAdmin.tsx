@@ -2,14 +2,16 @@
 
 /* eslint-disable react/prop-types */
 
-import { Card, Image } from 'react-bootstrap';
-import { Contact } from '@/lib/validationSchemas';
+import { Card, Image, ListGroup } from 'react-bootstrap';
+import { Contact, Note } from '@/lib/validationSchemas';
+import NoteItem from './NoteItem';
 
 interface ContactCardAdminProps {
   contact: Contact;
+  notes: Note[];
 }
 
-const ContactCardAdmin: React.FC<ContactCardAdminProps> = ({ contact }) => (
+const ContactCardAdmin: React.FC<ContactCardAdminProps> = ({ contact, notes }) => (
   <Card className="h-100">
     <Card.Header className="text-center">
       <Image src={contact.image} alt={`${contact.firstName} ${contact.lastName}`} width={75} roundedCircle />
@@ -20,6 +22,13 @@ const ContactCardAdmin: React.FC<ContactCardAdminProps> = ({ contact }) => (
       <Card.Text>{contact.description}</Card.Text>
       <p className="blockquote-footer">{contact.owner}</p>
     </Card.Body>
+    {notes.length > 0 ? (
+      <ListGroup variant="flush">
+        {notes.map((note) => (
+          <NoteItem key={note.id} note={note} />
+        ))}
+      </ListGroup>
+    ) : null}
   </Card>
 );
 

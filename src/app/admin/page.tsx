@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { adminProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
 import ContactCardAdmin from '@/components/ContactCardAdmin';
-import { Contact } from '@/lib/validationSchemas';
+import { Contact, Note } from '@/lib/validationSchemas';
 
 const AdminPage = async () => {
   const session = await getServerSession(authOptions);
@@ -16,6 +16,9 @@ const AdminPage = async () => {
   const prismaContacts = await prisma.contact.findMany({
     orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
   });
+  const prismaNotes = await prisma.note.findMany({
+    orderBy: [{ createdAt: 'desc' }],
+  });
   const contacts: Contact[] = prismaContacts.map((contact) => ({
     id: contact.id,
     firstName: contact.firstName,
@@ -25,6 +28,13 @@ const AdminPage = async () => {
     description: contact.description,
     owner: contact.owner,
   }));
+  const notes: Note[] = prismaNotes.map((note) => ({
+    id: note.id,
+    contactId: note.contactId,
+    note: note.note,
+    owner: note.owner,
+    createdAt: note.createdAt instanceof Date ? note.createdAt.toISOString() : note.createdAt,
+  }));
 
   return (
     <main>
@@ -33,11 +43,16 @@ const AdminPage = async () => {
           <Col>
             <h2>List Contacts (Admin)</h2>
             <Row xs={1} md={2} lg={3} className="g-4">
-              {contacts.map((contact) => (
-                <Col key={`Contact-${contact.id ?? `${contact.firstName}-${contact.lastName}-${contact.owner}`}`}>
-                  <ContactCardAdmin contact={contact} />
-                </Col>
-              ))}
+              {contacts.map((contact) => {
+                const contactNotes = contact.id
+                  ? notes.filter((note) => note.contactId === contact.id)
+                  : [];
+                return (
+                  <Col key={`Contact-${contact.id ?? `${contact.firstName}-${contact.lastName}-${contact.owner}`}`}>
+                    <ContactCardAdmin contact={contact} notes={contactNotes} />
+                  </Col>
+                );
+              })}
             </Row>
           </Col>
         </Row>

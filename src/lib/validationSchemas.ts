@@ -10,6 +10,20 @@ export interface Contact {
   owner: string;
 }
 
+export interface Note {
+  id: number;
+  contactId: number;
+  note: string;
+  owner: string;
+  createdAt: string;
+}
+
+export const AddNoteSchema = Yup.object({
+  note: Yup.string().required(),
+  contactId: Yup.number().required(),
+  owner: Yup.string().required(),
+});
+
 export const AddStuffSchema = Yup.object({
   name: Yup.string().required(),
   quantity: Yup.number().positive().required(),
