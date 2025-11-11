@@ -57,7 +57,7 @@ Visit `http://localhost:3000` and sign in with the seeded accounts or register y
 
 Unauthenticated visitors see marketing copy plus links to sign in or register.
 
-<img src="doc/landing-page.png" alt="Landing page">
+<img src="doc/landing.png" alt="Landing page">
 
 ### Sign in
 
