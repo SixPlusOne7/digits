@@ -1,4 +1,4 @@
-import { PrismaClient, Role, Condition } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import { hash } from 'bcrypt';
 import * as config from '../config/settings.development.json';
 
@@ -24,26 +24,6 @@ async function main() {
   });
   await Promise.all(userUpserts);
 
-  for (const [index, data] of config.defaultData.entries()) {
-    const condition = (data.condition as Condition) || Condition.good;
-    console.log(`  Adding stuff: ${JSON.stringify(data)}`);
-    // eslint-disable-next-line no-await-in-loop
-    await prisma.stuff.upsert({
-      where: { id: index + 1 },
-      update: {
-        name: data.name,
-        quantity: data.quantity,
-        owner: data.owner,
-        condition,
-      },
-      create: {
-        name: data.name,
-        quantity: data.quantity,
-        owner: data.owner,
-        condition,
-      },
-    });
-  }
   const contacts = config.defaultContacts ?? [];
   for (const [index, contact] of contacts.entries()) {
     console.log(`  Adding contact: ${contact.firstName} ${contact.lastName}`);
