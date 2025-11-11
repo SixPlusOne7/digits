@@ -104,24 +104,6 @@ Admin users (configured via `config/settings.development.json`) see global navig
 <img src="doc/admin-landing-page.png" alt="Admin navbar">
 <img src="doc/admin-list-stuff-page.png" alt="Admin contact list">
 
-### Change password
-
-Users can rotate their password from `/auth/change-password`, which requires the current password plus confirmation of the new one.
-
-<img src="doc/change-password-page.png" alt="Change password page">
-
-### Not authorized
-
-Non-admin users who manually browse to admin routes receive a friendly access-denied page.
-
-<img src="doc/not-authorized-page.png" alt="Not authorized page">
-
-### Sign out
-
-The `/auth/signout` page confirms the action before clearing the session via NextAuth.
-
-<img src="doc/signout-page.png" alt="Sign out page">
-
 ## Directory structure
 
 ```
